@@ -132,3 +132,8 @@
 
 **\*\*Co-Supervisor:\*\* Prof. Geetika Jain Saxena**
 
+## License
+This project is licensed under the Apache 2.0 License. 
+See [LICENSE](LICENSE) for details.
+© 2026 Kartikey Tiwari
+
