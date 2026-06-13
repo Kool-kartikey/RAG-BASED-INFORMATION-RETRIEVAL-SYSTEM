@@ -1,0 +1,619 @@
+{
+  "metadata": {
+    "project": "MAC RAG Chatbot \u2014 100 Query Benchmark",
+    "college": "Maharaja Agrasen College, University of Delhi",
+    "website": "mac.du.ac.in",
+    "total_queries": 100,
+    "categories": {
+      "factual": 20,
+      "listing": 20,
+      "entity": 15,
+      "course_specific": 15,
+      "off_topic": 20,
+      "absent": 10
+    },
+    "notes": "Ground truth verified against mac.du.ac.in. Static layer handles departments/courses/contact/about queries. Off-topic queries expect rejection message. Absent queries expect No data found."
+  },
+  "queries": [
+    {
+      "id": "F01",
+      "category": "factual",
+      "query": "What is the address of Maharaja Agrasen College?",
+      "ground_truth": "Maharaja Agrasen College, Vasundhara Enclave, Delhi - 110096"
+    },
+    {
+      "id": "F02",
+      "category": "factual",
+      "query": "What is the official website of MAC?",
+      "ground_truth": "mac.du.ac.in"
+    },
+    {
+      "id": "F03",
+      "category": "factual",
+      "query": "Which university is MAC affiliated to?",
+      "ground_truth": "University of Delhi"
+    },
+    {
+      "id": "F04",
+      "category": "factual",
+      "query": "What is the contact email of Maharaja Agrasen College?",
+      "ground_truth": "principal@mac.du.ac.in"
+    },
+    {
+      "id": "F05",
+      "category": "factual",
+      "query": "What is the phone number of MAC?",
+      "ground_truth": "+91-11-22610563"
+    },
+    {
+      "id": "F06",
+      "category": "factual",
+      "query": "What is the NAAC grade of Maharaja Agrasen College?",
+      "ground_truth": "NAAC Grade A"
+    },
+    {
+      "id": "F07",
+      "category": "factual",
+      "query": "Where is Maharaja Agrasen College located?",
+      "ground_truth": "Vasundhara Enclave, Delhi"
+    },
+    {
+      "id": "F08",
+      "category": "factual",
+      "query": "What does MAC stand for?",
+      "ground_truth": "Maharaja Agrasen College"
+    },
+    {
+      "id": "F09",
+      "category": "factual",
+      "query": "How can I contact Maharaja Agrasen College?",
+      "ground_truth": "Phone: +91-11-22610563, Email: principal@mac.du.ac.in"
+    },
+    {
+      "id": "F10",
+      "category": "factual",
+      "query": "Is MAC affiliated to Delhi University?",
+      "ground_truth": "Yes, Maharaja Agrasen College is affiliated to University of Delhi"
+    },
+    {
+      "id": "F11",
+      "category": "factual",
+      "query": "What is the full name of MAC college?",
+      "ground_truth": "Maharaja Agrasen College"
+    },
+    {
+      "id": "F12",
+      "category": "factual",
+      "query": "What is the MAC college website?",
+      "ground_truth": "mac.du.ac.in"
+    },
+    {
+      "id": "F13",
+      "category": "factual",
+      "query": "What is the accreditation of MAC?",
+      "ground_truth": "NAAC A grade"
+    },
+    {
+      "id": "F14",
+      "category": "factual",
+      "query": "Tell me the address of MAC",
+      "ground_truth": "Maharaja Agrasen College, Vasundhara Enclave, Delhi - 110096"
+    },
+    {
+      "id": "F15",
+      "category": "factual",
+      "query": "What is the pin code of Maharaja Agrasen College?",
+      "ground_truth": "110096"
+    },
+    {
+      "id": "F16",
+      "category": "factual",
+      "query": "What is the telephone number of MAC?",
+      "ground_truth": "+91-11-22610563"
+    },
+    {
+      "id": "F17",
+      "category": "factual",
+      "query": "What university does MAC belong to?",
+      "ground_truth": "University of Delhi"
+    },
+    {
+      "id": "F18",
+      "category": "factual",
+      "query": "Is MAC NAAC accredited?",
+      "ground_truth": "Yes, MAC is NAAC accredited with A grade"
+    },
+    {
+      "id": "F19",
+      "category": "factual",
+      "query": "What is the email id of MAC?",
+      "ground_truth": "principal@mac.du.ac.in"
+    },
+    {
+      "id": "F20",
+      "category": "factual",
+      "query": "Which area is Maharaja Agrasen College in?",
+      "ground_truth": "Vasundhara Enclave, Delhi"
+    },
+    {
+      "id": "L01",
+      "category": "listing",
+      "query": "List all departments in Maharaja Agrasen College",
+      "ground_truth": "Physics, Chemistry, Mathematics, Biology, Electronics, Computer Science, Commerce, English, Hindi, Political Science, Economics, History, Business Economics, Journalism, Physical Education"
+    },
+    {
+      "id": "L02",
+      "category": "listing",
+      "query": "What are all the courses offered at MAC?",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science, B.Com.(H), B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L03",
+      "category": "listing",
+      "query": "List all undergraduate courses in MAC",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science, B.Com.(H), B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L04",
+      "category": "listing",
+      "query": "What are the science courses at MAC?",
+      "ground_truth": "B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L05",
+      "category": "listing",
+      "query": "List all arts courses at Maharaja Agrasen College",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science"
+    },
+    {
+      "id": "L06",
+      "category": "listing",
+      "query": "List only the commerce stream courses at MAC",
+      "ground_truth": "B.Com.(H)"
+    },
+    {
+      "id": "L07",
+      "category": "listing",
+      "query": "List all the departments of MAC college",
+      "ground_truth": "Physics, Chemistry, Mathematics, Biology, Electronics, Computer Science, Commerce, English, Hindi, Political Science, Economics, History, Business Economics, Journalism, Physical Education"
+    },
+    {
+      "id": "L08",
+      "category": "listing",
+      "query": "What programmes are available at MAC?",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science, B.Com.(H), B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L09",
+      "category": "listing",
+      "query": "List all faculty of department of electronics",
+      "ground_truth": "Dr. Amit Pundir, Dr. Geetika Jain Saxena, Prof. Maneesha, Dr. Natasha, Prof. Praveen Kant Pandey, Mr. Paramjeet Singh, Dr. Chhavi Bhatnagar"
+    },
+    {
+      "id": "L10",
+      "category": "listing",
+      "query": "What are the B.Sc courses at MAC?",
+      "ground_truth": "B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L11",
+      "category": "listing",
+      "query": "What are all the courses available at Maharaja Agrasen College?",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science, B.Com.(H), B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L12",
+      "category": "listing",
+      "query": "Which departments does MAC have?",
+      "ground_truth": "Physics, Chemistry, Mathematics, Biology, Electronics, Computer Science, Commerce, English, Hindi, Political Science, Economics, History, Business Economics, Journalism, Physical Education"
+    },
+    {
+      "id": "L13",
+      "category": "listing",
+      "query": "List all BA honours courses at MAC",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science"
+    },
+    {
+      "id": "L14",
+      "category": "listing",
+      "query": "What are the available programmes at MAC?",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science, B.Com.(H), B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L15",
+      "category": "listing",
+      "query": "List all the courses offered by MAC college",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science, B.Com.(H), B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L16",
+      "category": "listing",
+      "query": "What all departments are there in MAC?",
+      "ground_truth": "Physics, Chemistry, Mathematics, Biology, Electronics, Computer Science, Commerce, English, Hindi, Political Science, Economics, History, Business Economics, Journalism, Physical Education"
+    },
+    {
+      "id": "L17",
+      "category": "listing",
+      "query": "What streams are available at Maharaja Agrasen College?",
+      "ground_truth": "Arts, Commerce, Science"
+    },
+    {
+      "id": "L18",
+      "category": "listing",
+      "query": "List all UG courses in MAC",
+      "ground_truth": "B.A.(H) Business Economics, B.A.(H) English, B.A.(H) Journalism, B.A.(H) Hindi, B.A.(H) Political Science, B.Com.(H), B.Sc.(Physical Science), B.Sc.(H) Electronics, B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "L19",
+      "category": "listing",
+      "query": "List all faculty of department of commerce",
+      "ground_truth": "Ms.Puneeta Agarwal, Prof. Mona Kansal, Dr.Alok Puranik, Dr.Vinod Kumar Yadav, Dr.Nirmal Jain, Dr. Ravinder Kumar"
+    },
+    {
+      "id": "L20",
+      "category": "listing",
+      "query": "List all faculty of department of mathematics",
+      "ground_truth": "Dr.Vanita Jain, Prof.Prasannan A.R, Prof.Anuradha Sharma, Prof.Sushil Yadav, Dr.Ayekpam Jiran Meitei, Mr.Vedpal Singh, Dr. Awadhesh Kumar Poddar"
+    },
+    {
+      "id": "E01",
+      "category": "entity",
+      "query": "Who is Dr. Amit Pundir?",
+      "ground_truth": "Dr. Amit Pundir is an Associate Professor in the Department of Electronics at Maharaja Agrasen College"
+    },
+    {
+      "id": "E02",
+      "category": "entity",
+      "query": "Who is Dr. Geetika Jain Saxena?",
+      "ground_truth": "Dr. Geetika Jain Saxena is an Associate Professor in the Department of Electronics at Maharaja Agrasen College"
+    },
+    {
+      "id": "E03",
+      "category": "entity",
+      "query": "What is B.Sc.(H) Electronics?",
+      "ground_truth": "B.Sc.(H) Electronics is an undergraduate science course offered at Maharaja Agrasen College"
+    },
+    {
+      "id": "E04",
+      "category": "entity",
+      "query": "Describe the B.Com.(H) course at MAC",
+      "ground_truth": "B.Com.(H) is a flagship undergraduate commerce programme at MAC, University of Delhi"
+    },
+    {
+      "id": "E05",
+      "category": "entity",
+      "query": "What is BBE course?",
+      "ground_truth": "BBE stands for Business Economics, full name B.A.(H) Business Economics offered at MAC"
+    },
+    {
+      "id": "E06",
+      "category": "entity",
+      "query": "What is B.Sc.(Physical Science)?",
+      "ground_truth": "B.Sc.(Physical Science) is an undergraduate science course offered at Maharaja Agrasen College"
+    },
+    {
+      "id": "E07",
+      "category": "entity",
+      "query": "What is B.Sc.(G) Mathematics?",
+      "ground_truth": "B.Sc.(G) Mathematics is an undergraduate science course offered at Maharaja Agrasen College"
+    },
+    {
+      "id": "E08",
+      "category": "entity",
+      "query": "Who is the HOD of Electronics at MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "E09",
+      "category": "entity",
+      "query": "Describe the B.A.(H) Journalism course at MAC",
+      "ground_truth": "B.A.(H) Journalism is an undergraduate arts course at MAC focusing on journalism and communication"
+    },
+    {
+      "id": "E10",
+      "category": "entity",
+      "query": "Who is the principal of Maharaja Agrasen College?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "E11",
+      "category": "entity",
+      "query": "Who is Prof. Maneesha at MAC?",
+      "ground_truth": "Prof. Maneesha is a Professor in the Department of Electronics at Maharaja Agrasen College"
+    },
+    {
+      "id": "E12",
+      "category": "entity",
+      "query": "What is B.A.(H) English?",
+      "ground_truth": "B.A.(H) English is an undergraduate arts course offered at Maharaja Agrasen College"
+    },
+    {
+      "id": "E13",
+      "category": "entity",
+      "query": "Who is Mr. Paramjeet Singh at MAC?",
+      "ground_truth": "Mr. Paramjeet Singh is an Associate Professor in the Department of Electronics at Maharaja Agrasen College"
+    },
+    {
+      "id": "E14",
+      "category": "entity",
+      "query": "What is B.A.(H) Hindi?",
+      "ground_truth": "B.A.(H) Hindi is an undergraduate arts course offered at Maharaja Agrasen College"
+    },
+    {
+      "id": "E15",
+      "category": "entity",
+      "query": "What is mac.du.ac.in?",
+      "ground_truth": "mac.du.ac.in is the official website of Maharaja Agrasen College"
+    },
+    {
+      "id": "C01",
+      "category": "course_specific",
+      "query": "Does MAC offer B.Sc Electronics?",
+      "ground_truth": "Yes, MAC offers B.Sc.(H) Electronics"
+    },
+    {
+      "id": "C02",
+      "category": "course_specific",
+      "query": "Is B.Com.(H) available at MAC?",
+      "ground_truth": "Yes, B.Com.(H) is available at MAC"
+    },
+    {
+      "id": "C03",
+      "category": "course_specific",
+      "query": "Does MAC have B.A. English?",
+      "ground_truth": "Yes, MAC offers B.A.(H) English"
+    },
+    {
+      "id": "C04",
+      "category": "course_specific",
+      "query": "Is B.A. Journalism available at MAC?",
+      "ground_truth": "Yes, MAC offers B.A.(H) Journalism"
+    },
+    {
+      "id": "C05",
+      "category": "course_specific",
+      "query": "Does MAC offer B.Sc Mathematics?",
+      "ground_truth": "Yes, MAC offers B.Sc.(G) Mathematics"
+    },
+    {
+      "id": "C06",
+      "category": "course_specific",
+      "query": "Is B.A. Hindi offered at MAC?",
+      "ground_truth": "Yes, MAC offers B.A.(H) Hindi"
+    },
+    {
+      "id": "C07",
+      "category": "course_specific",
+      "query": "Does MAC have Political Science course?",
+      "ground_truth": "Yes, MAC offers B.A.(H) Political Science"
+    },
+    {
+      "id": "C08",
+      "category": "course_specific",
+      "query": "Is B.A. Business Economics available at MAC?",
+      "ground_truth": "Yes, MAC offers B.A.(H) Business Economics"
+    },
+    {
+      "id": "C09",
+      "category": "course_specific",
+      "query": "Does MAC offer Physical Science?",
+      "ground_truth": "Yes, MAC offers B.Sc.(Physical Science)"
+    },
+    {
+      "id": "C10",
+      "category": "course_specific",
+      "query": "Does MAC offer MBA?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "C11",
+      "category": "course_specific",
+      "query": "Is there BTech at MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "C12",
+      "category": "course_specific",
+      "query": "Does MAC have BCA course?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "C13",
+      "category": "course_specific",
+      "query": "What subjects are in B.Sc Physical Science at MAC?",
+      "ground_truth": "B.Sc.(Physical Science) covers Chemistry and Physics"
+    },
+    {
+      "id": "C14",
+      "category": "course_specific",
+      "query": "Is there B.Sc Chemistry at MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "C15",
+      "category": "course_specific",
+      "query": "Can I study Electronics at MAC?",
+      "ground_truth": "Yes, MAC offers B.Sc.(H) Electronics"
+    },
+    {
+      "id": "O01",
+      "category": "off_topic",
+      "query": "What is the weather in Delhi today?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O02",
+      "category": "off_topic",
+      "query": "Who is the Prime Minister of India?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O03",
+      "category": "off_topic",
+      "query": "What is machine learning?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O04",
+      "category": "off_topic",
+      "query": "What is photosynthesis?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O05",
+      "category": "off_topic",
+      "query": "Who won the FIFA World Cup 2022?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O06",
+      "category": "off_topic",
+      "query": "What is the capital of France?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O07",
+      "category": "off_topic",
+      "query": "Who is Virat Kohli?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O08",
+      "category": "off_topic",
+      "query": "What is cryptocurrency?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O09",
+      "category": "off_topic",
+      "query": "Tell me a joke",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O10",
+      "category": "off_topic",
+      "query": "What is the stock price of Reliance?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O11",
+      "category": "off_topic",
+      "query": "Who is Narendra Modi?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O12",
+      "category": "off_topic",
+      "query": "What is deep learning?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O13",
+      "category": "off_topic",
+      "query": "What is the IPL schedule?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O14",
+      "category": "off_topic",
+      "query": "Who is Shah Rukh Khan?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O15",
+      "category": "off_topic",
+      "query": "What is the solar system?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O16",
+      "category": "off_topic",
+      "query": "Who is Elon Musk?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O17",
+      "category": "off_topic",
+      "query": "What is the black hole?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O18",
+      "category": "off_topic",
+      "query": "Who is the captain of Indian cricket team?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O19",
+      "category": "off_topic",
+      "query": "What is despacito?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "O20",
+      "category": "off_topic",
+      "query": "What is quantum physics?",
+      "ground_truth": "REJECTED"
+    },
+    {
+      "id": "A01",
+      "category": "absent",
+      "query": "What is the hostel fee of MAC?",
+      "ground_truth": "Mess Fees 4600 per month"
+    },
+    {
+      "id": "A02",
+      "category": "absent",
+      "query": "What is the placement record of MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A03",
+      "category": "absent",
+      "query": "What is the global ranking of MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A04",
+      "category": "absent",
+      "query": "What is the cut off for B.Com at MAC 2024?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A05",
+      "category": "absent",
+      "query": "What is the salary of professors at MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A06",
+      "category": "absent",
+      "query": "Does MAC have international exchange program?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A07",
+      "category": "absent",
+      "query": "What is the NIRF ranking of MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A08",
+      "category": "absent",
+      "query": "How many students are enrolled at MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A09",
+      "category": "absent",
+      "query": "What is the cut off for B.Sc Electronics at MAC?",
+      "ground_truth": "No data found"
+    },
+    {
+      "id": "A10",
+      "category": "absent",
+      "query": "What is the average package from MAC?",
+      "ground_truth": "No data found"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+======================================================================
+  MAC RAG CHATBOT — ANNOTATION LOG
+  Generated: 2026-03-28 20:40:44
+======================================================================
+
+  Annotation rule: Chunk marked RELEVANT (1) if it contains information necessary or sufficient to correctly answer the query. NOT RELEVANT (0) otherwise. Protocol follows Voorhees (TREC 1999).
+
+  ID     Category       Chunks   Relevant   Precision    Status
+  ----------------------------------------------------------
+  F01    factual        0        0          —            DONE
+  F02    factual        0        0          —            DONE
+  F03    factual        0        0          —            DONE
+  F04    factual        0        0          —            DONE
+  F05    factual        0        0          —            DONE
+  F06    factual        0        0          —            DONE
+  L01    listing        0        0          —            DONE
+  L02    listing        0        0          —            DONE
+  L03    listing        0        0          —            DONE
+  L04    listing        0        0          —            DONE
+  L05    listing        0        0          —            DONE
+  L06    listing        0        0          —            DONE
+  E01    entity         0        0          —            DONE
+  E02    entity         0        0          —            DONE
+  E03    entity         0        0          —            DONE
+  E04    entity         0        0          —            DONE
+  E05    entity         0        0          —            DONE
+  A01    admission_fee  0        0          —            DONE
+  A02    admission_fee  0        0          —            DONE
+  A03    admission_fee  0        0          —            DONE
+  A04    admission_fee  0        0          —            DONE
+  A05    admission_fee  0        0          —            DONE
+  O01    off_topic      0        0          —            DONE
+  O02    off_topic      0        0          —            DONE
+  O03    off_topic      0        0          —            DONE
+  O04    off_topic      0        0          —            DONE
+  O05    off_topic      0        0          —            DONE
+  AB01   absent         0        0          —            DONE
+  AB02   absent         0        0          —            DONE
+  AB03   absent         0        0          —            DONE
+
+  ──────────────────────────────────────────────────────────
+  Total chunks annotated : 0
+  Total relevant chunks  : 0
+—
+
+======================================================================

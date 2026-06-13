@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pymongo
+sentence-transformers
+faiss-cpu
+requests
+beautifulsoup4
+playwright
+pymupdf
+python-dotenv

@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "project": "MAC RAG Chatbot Benchmark",
+    "annotator": "Kartikey Tiwari",
+    "started_at": "2026-03-31T11:06:08.949677",
+    "annotation_rule": "Chunk marked RELEVANT (1) if it contains information necessary or sufficient to correctly answer the query. NOT RELEVANT (0) otherwise. Protocol follows Voorhees (TREC 1999).",
+    "last_saved": "2026-03-31T11:08:02.057177"
+  },
+  "queries": {
+    "F01": {
+      "query": "What is the full name of MAC college?",
+      "category": "factual",
+      "ground_truth": "Maharaja Agrasen College",
+      "expected": "answer",
+      "chunks": [
+        {
+          "rank": 1,
+          "source": "https://mac.du.ac.in/short-term-courses.aspx",
+          "score": 1.523,
+          "text": "Maharaja Agrasen College Announcement for Short-term Courses 2025-26 S.No. Title Link 1 Skill based joint Certificate Course Announcement for Short-term Courses (2024-25) Established in 2016 at Maharaja Agrasen College, the Abdul Kalam Centre aims to provide skill-based short-term courses and foster",
+          "label": 1,
+          "note": ""
+        },
+        {
+          "rank": 2,
+          "source": "https://mac.du.ac.in/mission.aspx",
+          "score": 1.2587,
+          "text": "Maharaja Agrasen College MISSION • To impart world-class higher education. • To empower students to evolve as creative and intellectual professionals. • To provide conducive environment for collaborative opportunities between industry and the academia. • To evolve socially responsible men and women,",
+          "label": 1,
+          "note": ""
+        },
+        {
+          "rank": 3,
+          "source": "https://mac.du.ac.in/admission.aspx",
+          "score": 1.2222,
+          "text": "Maharaja Agrasen College ADMISSION \"All applicants seeking admission in the college are hereby informed that the admission granted by the college is provisional subject to verification of the documents submitted. If any stage, even after grant of provisional admission it is found that the documents ",
+          "label": 1,
+          "note": ""
+        },
+        {
+          "rank": 4,
+          "source": "https://mac.du.ac.in/physics-intro.aspx",
+          "score": 1.1354,
+          "text": "Maharaja Agrasen College Department of Physics The course of Physics is much sought-after on account of its unique curriculum design, job oriented nature, and usefulness. The course is designed to suit to the requirements of students willing to pursue masters course in Physics, Computer Applications",
+          "label": 1,
+          "note": ""
+        },
+        {
+          "rank": 5,
+          "source": "https://mac.du.ac.in/physical-education-intro.aspx",
+          "score": 1.128,
+          "text": "Maharaja Agrasen College Department of Physical Education The Department of Physical Education inculcates and promotes an active interest in the fields of sports and maintains the fitness index of the college students. The College has developed its sports ground at the new college site at Vasundhara",
+          "label": 1,
+          "note": ""
+        }
+      ],
+      "completed": true,
+      "annotated_at": "2026-03-31T11:06:56.897511"
+    },
+    "F02": {
+      "query": "Which university is Maharaja Agrasen College affiliated to?",
+      "category": "factual",
+      "ground_truth": "University of Delhi",
+      "expected": "answer",
+      "chunks": [
+        {
+          "rank": 1,
+          "source": "https://mac.du.ac.in/short-term-courses.aspx",
+          "score": 1.2745,
+          "text": "Maharaja Agrasen College Announcement for Short-term Courses 2025-26 S.No. Title Link 1 Skill based joint Certificate Course Announcement for Short-term Courses (2024-25) Established in 2016 at Maharaja Agrasen College, the Abdul Kalam Centre aims to provide skill-based short-term courses and foster",
+          "label": 0,
+          "note": ""
+        },
+        {
+          "rank": 2,
+          "source": "https://mac.du.ac.in/principal.aspx",
+          "score": 1.1815,
+          "text": "As we begin this new academic year, I am excited to introduce you to a world of inclusive learning, holistic development, and skill-based education under the transformative framework of the National Education Policy (NEP). Maharaja Agrasen College, accredited with an 'A' Grade and consistently ranke",
+          "label": 0,
+          "note": ""
+        },
+        {
+          "rank": 3,
+          "source": "https://mac.du.ac.in/mission.aspx",
+          "score": 0.9993,
+          "text": "Maharaja Agrasen College MISSION • To impart world-class higher education. • To empower students to evolve as creative and intellectual professionals. • To provide conducive environment for collaborative opportunities between industry and the academia. • To evolve socially responsible men and women,",
+          "label": 0,
+          "note": ""
+        },
+        {
+          "rank": 4,
+          "source": "https://mac.du.ac.in/physics-intro.aspx",
+          "score": 0.9047,
+          "text": "Maharaja Agrasen College Department of Physics The course of Physics is much sought-after on account of its unique curriculum design, job oriented nature, and usefulness. The course is designed to suit to the requirements of students willing to pursue masters course in Physics, Computer Applications",
+          "label": 0,
+          "note": ""
+        },
+        {
+          "rank": 5,
+          "source": "https://mac.du.ac.in/physical-education-intro.aspx",
+          "score": 0.8821,
+          "text": "Maharaja Agrasen College Department of Physical Education The Department of Physical Education inculcates and promotes an active interest in the fields of sports and maintains the fitness index of the college students. The College has developed its sports ground at the new college site at Vasundhara",
+          "label": 0,
+          "note": ""
+        }
+      ],
+      "completed": true,
+      "annotated_at": "2026-03-31T11:08:02.057161"
+    }
+  }
+}

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MAC College Assistant</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background: #1a237e;
+      color: white;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .navbar .logo    { font-size: 20px; font-weight: bold; letter-spacing: 1px; }
+    .navbar .tagline { font-size: 12px; opacity: 0.8; margin-top: 3px; }
+    .nav-links a {
+      color: white; text-decoration: none;
+      margin-left: 20px; font-size: 14px; opacity: 0.9;
+    }
+    .nav-links a:hover { opacity: 1; text-decoration: underline; }
+
+    /* ── HERO ── */
+    .hero {
+      width: 100%; height: 420px;
+      background: #1a237e;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .hero img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top; display: block;
+    }
+
+    /* ── FALLBACK if no banner image ── */
+    .hero-placeholder {
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      width: 100%; height: 100%; text-align: center; color: white;
+    }
+    .hero-placeholder h2  { font-size: 32px; margin-bottom: 8px; }
+    .hero-placeholder p   { font-size: 15px; opacity: 0.8; }
+    .hero-placeholder .hint {
+      margin-top: 12px; font-size: 13px; opacity: 0.6;
+      border: 1px dashed rgba(255,255,255,0.4);
+      padding: 8px 16px; border-radius: 6px;
+    }
+
+    /* ── CARDS ── */
+    .cards {
+      display: flex; gap: 20px; padding: 30px;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .card {
+      background: white; border-radius: 10px;
+      padding: 24px; width: 220px; text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .card .icon { font-size: 36px; margin-bottom: 10px; }
+    .card h3    { font-size: 15px; color: #1a237e; margin-bottom: 6px; }
+    .card p     { font-size: 13px; color: #666; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #1a237e; color: white;
+      text-align: center; padding: 16px; font-size: 13px;
+    }
+
+    /* ════════════════════════════
+       CHAT WIDGET
+    ════════════════════════════ */
+    #chat-toggle {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #1a237e; color: white; border: none;
+      font-size: 26px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      z-index: 1000; display: flex;
+      align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    #chat-toggle:hover { transform: scale(1.08); }
+
+    #chat-window {
+      position: fixed; bottom: 100px; right: 28px;
+      width: 370px; height: 560px;
+      background: white; border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      display: none; flex-direction: column;
+      z-index: 999; overflow: hidden;
+    }
+
+    .chat-header {
+      background: #1a237e; color: white;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .chat-header .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #e8eaf6;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .chat-header .info .name   { font-weight: bold; font-size: 15px; }
+    .chat-header .info .status { font-size: 11px; opacity: 0.8; }
+    .chat-header-actions {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .header-btn {
+      background: rgba(255,255,255,0.15);
+      border: none; color: white;
+      width: 30px; height: 30px;
+      border-radius: 50%; font-size: 14px;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .header-btn:hover { background: rgba(255,255,255,0.30); }
+
+    #chat-messages {
+      flex: 1; overflow-y: auto;
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 6px;
+      background: #f8f9ff;
+    }
+
+    .msg-wrapper {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .msg-wrapper.user { align-items: flex-end; }
+    .msg-wrapper.bot  { align-items: flex-start; }
+
+    .msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .msg.bot {
+      background: white; color: #1a1a2e;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .msg.user {
+      background: #1a237e; color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.typing {
+      background: white; color: #999;
+      font-style: italic;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .timestamp {
+      font-size: 10px; color: #aaa; padding: 0 4px;
+    }
+
+    .date-divider {
+      display: flex; align-items: center; gap: 8px; margin: 8px 0;
+    }
+    .date-divider span {
+      font-size: 11px; color: #aaa;
+      background: #f8f9ff;
+      padding: 2px 8px; white-space: nowrap;
+    }
+    .date-divider::before,
+    .date-divider::after {
+      content: ""; flex: 1; height: 1px; background: #e0e0e0;
+    }
+
+    .suggestions {
+      padding: 0 16px 10px;
+      display: flex; flex-wrap: wrap; gap: 6px;
+      background: #f8f9ff;
+    }
+    .suggestion-chip {
+      background: #e8eaf6; color: #1a237e;
+      border: none; border-radius: 14px;
+      padding: 5px 12px; font-size: 12px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .suggestion-chip:hover { background: #c5cae9; }
+
+    .chat-input-area {
+      display: flex; padding: 12px; gap: 8px;
+      border-top: 1px solid #e0e0e0; background: white;
+    }
+    #chat-input {
+      flex: 1; border: 1.5px solid #c5cae9;
+      border-radius: 24px; padding: 9px 16px;
+      font-size: 13.5px; outline: none;
+      transition: border 0.2s;
+    }
+    #chat-input:focus { border-color: #1a237e; }
+
+    #send-btn {
+      background: #1a237e; color: white;
+      border: none; border-radius: 50%;
+      width: 40px; height: 40px; font-size: 18px;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: background 0.2s; flex-shrink: 0;
+    }
+    #send-btn:hover    { background: #283593; }
+    #send-btn:disabled { background: #9fa8da; cursor: not-allowed; }
+
+    #reset-toast {
+      position: fixed; bottom: 100px; right: 28px;
+      background: #1a237e; color: white;
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 13px; display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1001; align-items: center; gap: 12px;
+    }
+    #reset-toast button {
+      background: white; color: #1a237e;
+      border: none; border-radius: 6px;
+      padding: 4px 10px; font-size: 12px;
+      cursor: pointer; font-weight: bold;
+    }
+    #reset-toast .cancel-btn {
+      background: transparent; color: rgba(255,255,255,0.7);
+      font-weight: normal;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div>
+      <div class="logo">🎓 Maharaja Agrasen College</div>
+      <div class="tagline">University of Delhi &nbsp;|&nbsp; mac.du.ac.in &nbsp;|&nbsp; NAAC Grade A</div>
+    </div>
+    <div class="nav-links">
+      <a href="https://mac.du.ac.in" target="_blank">Home</a>
+      <a href="https://mac.du.ac.in/admission.aspx" target="_blank">Admissions</a>
+      <a href="https://mac.du.ac.in/departments.aspx" target="_blank">Departments</a>
+    </div>
+  </nav>
+
+  <!-- HERO — college banner image -->
+  <div class="hero">
+    <img
+      id="hero-img"
+      src="college_banner.jpg"
+      alt="Maharaja Agrasen College Campus"
+      onerror="
+        this.style.display='none';
+        document.getElementById('hero-fallback').style.display='flex';
+      "
+    />
+    <!-- Fallback shown only if college_banner.jpg is missing -->
+    <div class="hero-placeholder" id="hero-fallback">
+      <h2>Vasundhara Enclave, Delhi – 110096</h2>
+      <p>Est. 1994 &nbsp;|&nbsp; NAAC Grade A</p>
+      <div class="hint">📷 Place <strong>college_banner.jpg</strong> in the project root to show the campus image</div>
+    </div>
+  </div>
+
+  <!-- QUICK INFO CARDS -->
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🏫</div>
+      <h3>About MAC</h3>
+      <p>NAAC Grade A institution. 15 departments across Arts, Science and Commerce.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📚</div>
+      <h3>Departments</h3>
+      <p>9 undergraduate programmes in Arts, Science and Commerce streams.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📝</div>
+      <h3>Admissions</h3>
+      <p>Merit-based admissions through the University of Delhi centralised portal.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📞</div>
+      <h3>Contact Us</h3>
+      <p>+91-11-22610563 &nbsp;|&nbsp; principal@mac.du.ac.in</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 Maharaja Agrasen College, University of Delhi. All rights reserved.
+  </footer>
+
+
+  <!-- ════════════════════════════
+       CHAT WIDGET
+  ════════════════════════════ -->
+  <button id="chat-toggle" title="Ask MAC Chatbot">💬</button>
+
+  <div id="reset-toast">
+    <span>Clear chat history?</span>
+    <button onclick="confirmReset()">Yes, Clear</button>
+    <button class="cancel-btn" onclick="hideResetToast()">Cancel</button>
+  </div>
+
+  <div id="chat-window">
+    <div class="chat-header">
+      <div class="avatar">🎓</div>
+      <div class="info">
+        <div class="name">MAC Assistant</div>
+        <div class="status">● Online</div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="header-btn" onclick="showResetToast()" title="Clear chat">🗑️</button>
+        <button class="header-btn" id="close-chat" title="Close">✕</button>
+      </div>
+    </div>
+
+    <div id="chat-messages"></div>
+
+    <div class="suggestions">
+      <button class="suggestion-chip" onclick="askSuggestion(this)">Who is the principal of MAC?</button>
+      <button class="suggestion-chip" onclick="askSuggestion(this)">Departments at MAC </button>
+      <button class="suggestion-chip" onclick="askSuggestion(this)">Contact details</button>
+      <button class="suggestion-chip" onclick="askSuggestion(this)">About MAC</button>
+    </div>
+
+    <div class="chat-input-area">
+      <input
+        id="chat-input"
+        type="text"
+        placeholder="Type your question..."
+        maxlength="300"
+        autocomplete="off"
+      />
+      <button id="send-btn">&#10148;</button>
+    </div>
+  </div>
+
+
+  <script>
+    // Auto-detect origin so this works both on localhost AND via ngrok
+    // without any hardcoded URLs.
+    const API_URL = window.location.origin + "/ask";
+
+    const toggle     = document.getElementById("chat-toggle");
+    const chatWindow = document.getElementById("chat-window");
+    const closeBtn   = document.getElementById("close-chat");
+    const input      = document.getElementById("chat-input");
+    const sendBtn    = document.getElementById("send-btn");
+    const msgDiv     = document.getElementById("chat-messages");
+
+    // ─────────────────────────────────────
+    // GREETING DETECTION + RESPONSES
+    // ─────────────────────────────────────
+    const GREETINGS = {
+      patterns: [
+        /^(hi|hey|hello|helo|hii|hiii|hai|helo there)[\s!.]*$/i,
+        /^(namaste|namaskar|namastey|namasthe)[\s!.]*$/i,
+        /^good\s*(morning|afternoon|evening|night|day)[\s!.]*$/i,
+        /^(howdy|sup|what'?s up|greetings|yo)[\s!.]*$/i,
+        /^(how are you|how r u|how are u)[\s!?]*$/i,
+      ],
+      getResponse(query) {
+        const q    = query.trim().toLowerCase();
+        const hour = new Date().getHours();
+        let timeGreeting = "Hello";
+        if      (hour >= 5  && hour < 12) timeGreeting = "Good morning";
+        else if (hour >= 12 && hour < 17) timeGreeting = "Good afternoon";
+        else if (hour >= 17 && hour < 21) timeGreeting = "Good evening";
+        else                              timeGreeting = "Good night";
+
+        if (/namaste|namaskar|namastey|namasthe/i.test(q))
+          return `🙏 Namaste! ${timeGreeting}! I'm the MAC College Assistant.\n\nHow can I help you today? You can ask me about admissions, departments, faculty, courses, or any other college-related topic.`;
+
+        if (/how are you|how r u|how are u/i.test(q))
+          return `I'm doing great, thank you for asking! 😊\n\nI'm here to help you with information about Maharaja Agrasen College. What would you like to know?`;
+
+        if (/good\s*(morning|afternoon|evening|night|day)/i.test(q)) {
+          const part = q.match(/good\s*(\w+)/i)[1];
+          const cap  = part.charAt(0).toUpperCase() + part.slice(1);
+          return `Good ${cap}! 😊 Welcome to MAC College Assistant.\n\nI can help you with admissions, departments, faculty, courses, fees, and more. What would you like to know?`;
+        }
+
+        return `${timeGreeting}! 👋 Welcome to MAC College Assistant.\n\nI can answer questions about:\n• Admissions & Eligibility\n• Departments & Courses\n• Faculty & Principal\n• Events & Activities\n• Contact & Location\n\nWhat would you like to know?`;
+      },
+      matches(query) {
+        return this.patterns.some(p => p.test(query.trim()));
+      }
+    };
+
+    // ─────────────────────────────────────
+    // TIMESTAMP
+    // ─────────────────────────────────────
+    function getTimestamp() {
+      const now  = new Date();
+      let h      = now.getHours();
+      const m    = String(now.getMinutes()).padStart(2, "0");
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      return `${h}:${m} ${ampm}`;
+    }
+
+    function getTodayLabel() {
+      return new Date().toLocaleDateString("en-IN", {
+        weekday: "long", day: "numeric", month: "long"
+      });
+    }
+
+    // ─────────────────────────────────────
+    // ADD MESSAGE
+    // ─────────────────────────────────────
+    let firstMessage = true;
+
+    function addMessage(text, role) {
+      if (firstMessage && role !== "typing") {
+        const divider     = document.createElement("div");
+        divider.className = "date-divider";
+        divider.innerHTML = `<span>Today — ${getTodayLabel()}</span>`;
+        msgDiv.appendChild(divider);
+        firstMessage = false;
+      }
+
+      const wrapper     = document.createElement("div");
+      wrapper.className = `msg-wrapper ${role}`;
+
+      const bubble      = document.createElement("div");
+      bubble.className  = `msg ${role}`;
+      bubble.innerHTML  = text.replace(/\n/g, "<br>");
+      wrapper.appendChild(bubble);
+
+      if (role !== "typing") {
+        const ts       = document.createElement("div");
+        ts.className   = "timestamp";
+        ts.textContent = getTimestamp();
+        wrapper.appendChild(ts);
+      }
+
+      msgDiv.appendChild(wrapper);
+      msgDiv.scrollTop = msgDiv.scrollHeight;
+      return wrapper;
+    }
+
+    // ─────────────────────────────────────
+    // RESET
+    // ─────────────────────────────────────
+    function showResetToast() {
+      document.getElementById("reset-toast").style.display = "flex";
+    }
+    function hideResetToast() {
+      document.getElementById("reset-toast").style.display = "none";
+    }
+    function confirmReset() {
+      hideResetToast();
+      msgDiv.innerHTML = "";
+      firstMessage     = true;
+      setTimeout(() => {
+        addMessage("👋 Chat cleared! Ask me anything about MAC.", "bot");
+      }, 200);
+    }
+
+    // ─────────────────────────────────────
+    // OPEN / CLOSE
+    // ─────────────────────────────────────
+    let chatOpened = false;
+
+    toggle.addEventListener("click", () => {
+      const isOpen = chatWindow.style.display === "flex";
+      chatWindow.style.display = isOpen ? "none" : "flex";
+      if (!isOpen) {
+        input.focus();
+        if (!chatOpened) {
+          chatOpened = true;
+          addMessage(
+            "👋 Hi! I'm the MAC College Assistant.\n\nI can answer questions about admissions, departments, faculty, courses, events and more.\n\nHow can I help you today?",
+            "bot"
+          );
+        }
+      }
+    });
+
+    closeBtn.addEventListener("click", () => {
+      chatWindow.style.display = "none";
+    });
+
+    document.addEventListener("click", (e) => {
+      const toast = document.getElementById("reset-toast");
+      if (!toast.contains(e.target) && !e.target.closest(".header-btn")) {
+        hideResetToast();
+      }
+    });
+
+    // ─────────────────────────────────────
+    // SEND MESSAGE
+    // ─────────────────────────────────────
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) sendMessage();
+    });
+    sendBtn.addEventListener("click", sendMessage);
+
+    function askSuggestion(btn) {
+      input.value = btn.textContent;
+      sendMessage();
+    }
+
+    async function sendMessage() {
+      const question = input.value.trim();
+      if (!question) return;
+
+      addMessage(question, "user");
+      input.value      = "";
+      sendBtn.disabled = true;
+
+      // Greeting — handle locally, no API call needed
+      if (GREETINGS.matches(question)) {
+        setTimeout(() => {
+          addMessage(GREETINGS.getResponse(question), "bot");
+          sendBtn.disabled = false;
+          input.focus();
+        }, 400);
+        return;
+      }
+
+      // API call
+      const typingWrapper     = document.createElement("div");
+      typingWrapper.className = "msg-wrapper bot";
+      const typingBubble      = document.createElement("div");
+      typingBubble.className  = "msg typing";
+      typingBubble.innerHTML  = "Thinking...";
+      typingWrapper.appendChild(typingBubble);
+      msgDiv.appendChild(typingWrapper);
+      msgDiv.scrollTop = msgDiv.scrollHeight;
+
+      try {
+        const res  = await fetch(API_URL, {
+          method  : "POST",
+          headers : { "Content-Type": "application/json" },
+          body    : JSON.stringify({ question })
+        });
+        const data = await res.json();
+        typingWrapper.remove();
+        addMessage(data.answer || "No data found.", "bot");
+      } catch (err) {
+        typingWrapper.remove();
+        addMessage("⚠️ Cannot reach the server. Please try again shortly.", "bot");
+      }
+
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  </script>
+
+</body>
+</html>

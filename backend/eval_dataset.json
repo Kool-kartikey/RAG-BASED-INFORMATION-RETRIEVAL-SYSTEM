@@ -1,0 +1,153 @@
+{
+    "queries": [
+      {
+        "id": "F01",
+        "category": "factual",
+        "query": "What is the address of Maharaja Agrasen College?",
+        "ground_truth": "Maharaja Agrasen College, Vasundhara Enclave, Delhi-110096"
+      },
+      {
+        "id": "F02",
+        "category": "factual",
+        "query": "What is the official website of Maharaja Agrasen College?",
+        "ground_truth": "https://mac.du.ac.in"
+      },
+      {
+        "id": "F03",
+        "category": "factual",
+        "query": "Which university is Maharaja Agrasen College affiliated with?",
+        "ground_truth": "University of Delhi"
+      },
+      {
+        "id": "F04",
+        "category": "factual",
+        "query": "What is the contact email of Maharaja Agrasen College?",
+        "ground_truth": "principal@mac.du.ac.in"
+      },
+      {
+        "id": "F05",
+        "category": "factual",
+        "query": "Where is Maharaja Agrasen College located?",
+        "ground_truth": "Vasundhara Enclave, Delhi"
+      },
+  
+      {
+        "id": "L01",
+        "category": "listing",
+        "query": "List all departments in Maharaja Agrasen College",
+        "ground_truth": "Departments include Physics, Chemistry, Mathematics, Biology, Electronics, Computer Science, Commerce, English, Hindi, Political Science, Economics, History, Business Economics, Economics, Journalism, Physical Education"
+      },
+      {
+        "id": "L02",
+        "category": "listing",
+        "query": "List all undergraduate courses offered by MAC",
+        "ground_truth": "Courses include B.Sc(H) Electronics, B.Sc.(Physical Science), B.Sc.(G) Mathematics, B.Com (Hons), B.A.(H) Business Economics (BBE), B.A.(H) English, B.A.(H) Journalism, B.A.(H) Political Science, B.A.(H) Hindi"
+      },
+      {
+        "id": "L03",
+        "category": "listing",
+        "query": "List facilities available on campus",
+        "ground_truth": "library, lab, sports, canteen, computer, seminar room"
+      },
+      {
+        "id": "L04",
+        "category": "listing",
+        "query": "List student societies in MAC",
+        "ground_truth": "Mac Voice Blog (Journalism), National Service Scheme, NSS, National Cadet Corps, NCC"
+      },
+      {
+        "id": "L05",
+        "category": "listing",
+        "query": "List commerce-related courses at MAC",
+        "ground_truth": "Commerce-related courses include B.Com (Hons) and B.A.(H) Business Economics (BBE)"
+      },
+  
+      {
+        "id": "E01",
+        "category": "entity",
+        "query": "What is NAAC accreditation of Maharaja Agrasen College?",
+        "ground_truth": "Maharaja Agrasen College, accredited with an 'A' Grade by NAAC"
+      },
+      {
+        "id": "E02",
+        "category": "entity",
+        "query": "What is B.Com (Hons.) course?",
+        "ground_truth": "B.Com (Hons.) has been the flagship programme of Delhi University."
+      },
+      
+      {
+        "id": "E03",
+        "category": "entity",
+        "query": "What does MAC stand for?",
+        "ground_truth": "MAC stands for Maharaja Agrasen College"
+      },
+  
+      {
+        "id": "O01",
+        "category": "off_topic",
+        "query": "Who is the Prime Minister of India?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "O02",
+        "category": "off_topic",
+        "query": "What is machine learning?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "O03",
+        "category": "off_topic",
+        "query": "Explain black holes",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "O04",
+        "category": "off_topic",
+        "query": "What is the capital of France?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "O05",
+        "category": "off_topic",
+        "query": "Who won the FIFA World Cup 2022?",
+        "ground_truth": "No data found on official website"
+      },
+  
+      {
+        "id": "A01",
+        "category": "absent",
+        "query": "What is the hostel fee of MAC?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "A02",
+        "category": "absent",
+        "query": "What is the average placement salary at MAC?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "A03",
+        "category": "absent",
+        "query": "Does MAC provide international exchange programs?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "A04",
+        "category": "absent",
+        "query": "What is the global ranking of MAC?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "A05",
+        "category": "absent",
+        "query": "What is the CEO of Maharaja Agrasen College?",
+        "ground_truth": "No data found on official website"
+      },
+      {
+        "id": "A06",
+        "category": "absent",
+        "query": "What is the student strength of MAC?",
+        "ground_truth": "No data found on official website"
+      }
+    ]
+  }

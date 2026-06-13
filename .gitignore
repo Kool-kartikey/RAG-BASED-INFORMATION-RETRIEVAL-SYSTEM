@@ -1,0 +1,43 @@
+# Python
+venv/
+.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Secrets
+.env
+*.env
+admin-panel/**/.env
+
+# Model files
+*.gguf
+*.bin
+*.ggml
+models/
+
+# FAISS index
+faiss_index/
+*.index
+*.pkl
+*.faiss
+
+# React/Node
+node_modules/
+dist/
+build/
+
+# Scraped data
+scraped_data/
+crawled_data/
+raw_html/
+*.json.bak
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# MongoDB
+data/db/
+dumps/

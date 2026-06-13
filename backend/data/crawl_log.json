@@ -1,0 +1,32 @@
+[
+  {
+    "crawl_id": "40BB42E7",
+    "subdomain": "https://mac.du.ac.in/contactus.aspx",
+    "max_pages": 5,
+    "pages_found": 0,
+    "chunks_added": 0,
+    "status": "done",
+    "started_at": "2026-04-08T14:19:13.526794",
+    "finished_at": "2026-04-08T14:20:05.580986"
+  },
+  {
+    "crawl_id": "E7EB11AE",
+    "subdomain": "https://mac.du.ac.in/contactus.aspx",
+    "max_pages": 100,
+    "pages_found": 1,
+    "chunks_added": 2,
+    "status": "done",
+    "started_at": "2026-04-19T18:05:34.226798",
+    "finished_at": "2026-04-19T18:06:34.749310"
+  },
+  {
+    "crawl_id": "E079BBBA",
+    "subdomain": "https://mac.du.ac.in/internal-assesment-rules.aspx",
+    "max_pages": 10,
+    "pages_found": 2,
+    "chunks_added": 256,
+    "status": "done",
+    "started_at": "2026-05-21T21:47:39.570786",
+    "finished_at": "2026-05-21T21:48:48.934818"
+  }
+]
