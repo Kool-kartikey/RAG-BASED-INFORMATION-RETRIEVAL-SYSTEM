@@ -319,11 +319,33 @@ STATIC_TRIGGERS = {
 }
 
 
+def check_naac_query(query: str):
+    """
+    Bulletproof disambiguation for NAAC accreditation queries.
+    Distinguishes between University of Delhi (Grade A+) and Maharaja Agrasen College (Grade A).
+    """
+    ql = query.lower().strip()
+    if "naac" in ql or "accreditation" in ql:
+        has_du = any(t in ql for t in ["du", "delhi university", "uod", "central university", "university of delhi"])
+        has_mac = any(t in ql for t in ["mac", "maharaja", "agrasen", "college"])
+        if has_du and not has_mac:
+            return "The University of Delhi (DU) is accredited with an 'A+' Grade by the National Assessment and Accreditation Council (NAAC)."
+        if has_mac and not has_du:
+            return "Maharaja Agrasen College (MAC) NAAC Grade A."
+        return "University of Delhi (DU) NAAC Grade: A+ | Maharaja Agrasen College (MAC) NAAC Grade: A."
+    return None
+
+
 def check_static_response(query: str):
     """
     Returns a pre-installed static response if the query matches
     a known stable topic. Returns None otherwise.
     """
+    # 1. NAAC accreditation disambiguation
+    naac_resp = check_naac_query(query)
+    if naac_resp:
+        return naac_resp
+
     ql = query.lower().strip()
     for _, config in STATIC_TRIGGERS.items():
         for pattern in config["patterns"]:
