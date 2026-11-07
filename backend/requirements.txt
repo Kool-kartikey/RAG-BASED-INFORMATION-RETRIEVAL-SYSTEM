@@ -3,6 +3,7 @@ uvicorn
 pymongo
 sentence-transformers
 faiss-cpu
+rank-bm25
 requests
 beautifulsoup4
 playwright

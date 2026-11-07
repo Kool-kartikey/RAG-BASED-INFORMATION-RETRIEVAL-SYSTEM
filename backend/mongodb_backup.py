@@ -11,7 +11,7 @@ MONGO_URI = "mongodb://localhost:27017"
 DB_NAME   = "college_chatbot_db"
 
 def get_db():
-    client = MongoClient(MONGO_URI)
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=500)
     return client[DB_NAME]
 
 

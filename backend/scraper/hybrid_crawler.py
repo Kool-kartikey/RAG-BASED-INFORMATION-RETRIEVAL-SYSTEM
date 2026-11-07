@@ -77,13 +77,17 @@ def is_pdf_url(url: str) -> bool:
     return url.lower().split("?")[0].endswith(".pdf")
 
 
-def is_valid(url: str) -> bool:
+def is_valid(url: str, allowed_domain: str = None) -> bool:
     """
     Returns True if URL should be crawled.
     PDFs are valid. Only true binary non-text files are rejected.
+    Supports multi-tenant domains (e.g. du.ac.in, mac.du.ac.in).
     """
     parsed = urlparse(url)
-    if DOMAIN not in parsed.netloc:
+    target = allowed_domain if allowed_domain else DOMAIN
+    netloc = parsed.netloc.lower()
+    target_clean = target.lower().replace("https://", "").replace("http://", "").split("/")[0].replace("www.", "")
+    if target_clean not in netloc and not netloc.endswith("." + target_clean):
         return False
     url_clean = url.lower().split("?")[0]
     if any(url_clean.endswith(ext) for ext in SKIP_EXTENSIONS):
@@ -543,13 +547,18 @@ def crawl_subdomain(
     skipped_thin      = 0
     skipped_pdf_fail  = 0
 
+    parsed_start = urlparse(start_url)
+    target_domain = parsed_start.netloc.lower().replace("www.", "")
+    if not target_domain:
+        target_domain = DOMAIN
+
     def add_links_from_soup(soup, base_url):
         for link in soup.find_all("a", href=True):
             href = normalize(urljoin(base_url, link["href"]))
-            if is_pdf_url(href) and DOMAIN in href and href not in visited:
+            if is_pdf_url(href) and (target_domain in href or DOMAIN in href) and href not in visited:
                 if href not in pdf_queue:
                     pdf_queue.append(href)
-            elif is_valid(href) and href not in visited:
+            elif is_valid(href, allowed_domain=target_domain) and href not in visited:
                 if href not in html_queue:
                     html_queue.append(href)
 
@@ -561,7 +570,7 @@ def crawl_subdomain(
             continue
         visited.add(url)
 
-        if DOMAIN not in url:
+        if target_domain not in url and DOMAIN not in url:
             continue
 
         try:

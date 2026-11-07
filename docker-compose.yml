@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # ── FASTAPI BACKEND (HYBRID RAG + STREAMING) ────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mac_rag_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - API_URL=http://ollama:11434/v1/chat/completions
+      - MODEL_NAME=llama3.2:3b
+    volumes:
+      - ./backend/data:/app/data
+    depends_on:
+      - mongodb
+
+  # ── REACT ADMIN MISSION CONTROL (NGINX) ─────────────────────────────────────
+  admin-panel:
+    build:
+      context: ./admin-panel/mac-crawl-buddy-main
+      dockerfile: Dockerfile
+    container_name: mac_rag_admin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  # ── PERSISTENT MONGODB DATABASE ─────────────────────────────────────────────
+  mongodb:
+    image: mongo:7.0
+    container_name: mac_rag_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  # ── OLLAMA LOCAL LLM ENGINE (CPU/GPU OPTIMIZED) ─────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: mac_rag_llm
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+
+volumes:
+  mongodb_data:
+  ollama_models:

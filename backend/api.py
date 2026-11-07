@@ -6,15 +6,18 @@ sys.path.append(os.path.dirname(__file__))
 
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
 from typing import Optional, List
 import secrets
 
 from backend.retriever import search
-from backend.llm import generate_answer
-from chatbot import get_answer
+from backend.llm import generate_answer, stream_answer
+from chatbot import (
+    get_answer, check_static_response, check_course_query,
+    check_conversational_intent, is_mac_related, OFF_TOPIC_RESPONSE, log_to_mongo
+)
 
 from crawl_log import get_all_crawls, get_crawl_by_id, delete_crawl_by_id
 from scheduler import start_scheduler, schedule_crawl_job, get_scheduled_jobs, remove_scheduled_job
@@ -112,6 +115,16 @@ def root():
     return {"message": "MAC College RAG API running."}
 
 
+@app.get("/du")
+def du_portal():
+    du_file = os.path.join(os.path.dirname(__file__), "du_index.html")
+    if os.path.exists(du_file):
+        return FileResponse(du_file)
+    elif os.path.exists("du_index.html"):
+        return FileResponse("du_index.html")
+    raise HTTPException(status_code=404, detail="du_index.html not found")
+
+
 @app.get("/college_banner.jpg")
 def serve_banner():
     if os.path.exists("college_banner.jpg"):
@@ -148,6 +161,69 @@ def ask(request: QueryRequest):
             answer="Something went wrong. Please try again.",
             sources=[]
         )
+
+
+@app.post("/ask-stream")
+async def ask_stream(request: QueryRequest):
+    question = request.question.strip()
+    if not question:
+        async def empty_gen():
+            yield "data: " + json.dumps({"token": "Please ask a question.", "done": True, "sources": []}) + "\n\n"
+        return StreamingResponse(empty_gen(), media_type="text/event-stream")
+
+    # Step 0: Check conversational greetings / courtesy (instant response)
+    convo = check_conversational_intent(question)
+    if convo:
+        log_to_mongo(question, convo)
+        async def convo_gen():
+            yield "data: " + json.dumps({"token": convo, "done": True, "sources": []}) + "\n\n"
+        return StreamingResponse(convo_gen(), media_type="text/event-stream")
+
+    # Step 1: Check fast static & course catalog paths (instant response)
+    static = check_static_response(question)
+    if not static:
+        static = check_course_query(question)
+
+    if static:
+        log_to_mongo(question, static)
+        async def static_gen():
+            yield "data: " + json.dumps({"token": static, "done": True, "sources": []}) + "\n\n"
+        return StreamingResponse(static_gen(), media_type="text/event-stream")
+
+    # Step 2: Guardrails check
+    allowed, reason = is_mac_related(question)
+    if not allowed:
+        log_to_mongo(question, OFF_TOPIC_RESPONSE)
+        async def block_gen():
+            yield "data: " + json.dumps({"token": OFF_TOPIC_RESPONSE, "done": True, "sources": []}) + "\n\n"
+        return StreamingResponse(block_gen(), media_type="text/event-stream")
+
+    from backend.llm import is_not_offered_query
+    if is_not_offered_query(question):
+        log_to_mongo(question, "No data found")
+        async def not_offered_gen():
+            yield "data: " + json.dumps({"token": "No data found", "done": True, "sources": []}) + "\n\n"
+        return StreamingResponse(not_offered_gen(), media_type="text/event-stream")
+
+    # Step 3: Hybrid search retrieval & LLM streaming
+    try:
+        chunks = search(question, k=5)
+        sources = list(set([c.get("source", "unknown") for c in chunks if c.get("source")]))
+    except Exception:
+        chunks, sources = [], []
+
+    async def event_generator():
+        full_tokens = []
+        for token in stream_answer(question, chunks):
+            full_tokens.append(token)
+            payload = json.dumps({"token": token, "done": False, "sources": sources})
+            yield f"data: {payload}\n\n"
+
+        full_text = "".join(full_tokens)
+        log_to_mongo(question, full_text)
+        yield "data: " + json.dumps({"token": "", "done": True, "sources": sources}) + "\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @app.post("/debug")

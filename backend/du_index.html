@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>University of Delhi | दिल्ली विश्वविद्यालय</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+
+    /* ── TOP UTILITY BAR ── */
+    .top-bar {
+      background: #3b0764;
+      color: #f3e8ff;
+      padding: 6px 40px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .top-bar a { color: #f3e8ff; text-decoration: none; margin-left: 15px; }
+    .top-bar a:hover { text-decoration: underline; }
+
+    /* ── HEADER & NAVBAR ── */
+    .header {
+      background: #581c87;
+      color: white;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(88, 28, 135, 0.2);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-emblem {
+      width: 52px;
+      height: 52px;
+      background: #f59e0b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 24px;
+      color: #581c87;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .brand-text h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+    .brand-text p  { font-size: 13px; color: #e9d5ff; font-weight: 400; }
+
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a {
+      color: #f5f3ff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+    .nav-badge {
+      background: #f59e0b;
+      color: #451a03;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 5px;
+    }
+
+    /* ── HERO BANNER ── */
+    .hero {
+      background: linear-gradient(135deg, #4c1d95 0%, #6b21a8 50%, #7e22ce 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.15), transparent 40%);
+      pointer-events: none;
+    }
+    .hero h2 { font-size: 38px; font-weight: 800; margin-bottom: 12px; }
+    .hero p  { font-size: 16px; color: #f3e8ff; max-width: 720px; margin: 0 auto 28px; line-height: 1.6; }
+    .hero-btn {
+      background: #f59e0b;
+      color: #451a03;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s;
+    }
+    .hero-btn:hover { background: #fbbf24; transform: translateY(-2px); }
+
+    /* ── QUICK PORTALS GRID ── */
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #3b0764;
+      margin: 40px 40px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .portals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      padding: 0 40px;
+      margin-bottom: 40px;
+    }
+    .portal-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px 20px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .portal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(88, 28, 135, 0.08);
+      border-color: #c084fc;
+    }
+    .portal-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #faf5ff;
+      color: #7e22ce;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+    .portal-card h3 { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }
+    .portal-card p  { font-size: 13px; color: #64748b; line-height: 1.5; }
+
+    /* ── CIRCULARS & NOTICES ── */
+    .notices-section {
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 40px;
+      margin-bottom: 60px;
+    }
+    .notice-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .notice-item:last-child { border-bottom: none; }
+    .notice-date {
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .notice-text a {
+      color: #3b0764;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .notice-text a:hover { color: #7e22ce; text-decoration: underline; }
+
+    /* ── CHATBOT FLOATING WIDGET ── */
+    #du-chat-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 62px;
+      height: 62px;
+      background: linear-gradient(135deg, #6b21a8, #4c1d95);
+      border-radius: 50%;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 6px 20px rgba(76, 29, 149, 0.45);
+      z-index: 9999;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    #du-chat-toggle:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 25px rgba(76, 29, 149, 0.6);
+    }
+
+    #du-chat-window {
+      position: fixed;
+      bottom: 96px;
+      right: 24px;
+      width: 380px;
+      height: 560px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 9999;
+      border: 1px solid #e9d5ff;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #581c87, #4c1d95);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chat-header-info h4 { font-size: 15px; font-weight: 700; }
+    .chat-header-info p  { font-size: 11px; color: #e9d5ff; margin-top: 2px; }
+    .chat-close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    .chat-close-btn:hover { opacity: 1; }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #faf5ff;
+    }
+
+    .msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      word-wrap: break-word;
+    }
+    .msg.bot {
+      background: white;
+      color: #1e293b;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+      border: 1px solid #f3e8ff;
+    }
+    .msg.user {
+      background: #6b21a8;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+    .msg.typing {
+      font-style: italic;
+      color: #9333ea;
+      background: #f3e8ff;
+    }
+
+    .suggestion-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .pill {
+      background: white;
+      border: 1px solid #c084fc;
+      color: #6b21a8;
+      font-size: 11.5px;
+      padding: 5px 10px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pill:hover { background: #f3e8ff; }
+
+    .chat-input-bar {
+      padding: 12px 16px;
+      background: white;
+      border-top: 1px solid #e9d5ff;
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input-bar input {
+      flex: 1;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 13.5px;
+      outline: none;
+    }
+    .chat-input-bar input:focus { border-color: #7e22ce; }
+    .chat-send-btn {
+      background: #6b21a8;
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .chat-send-btn:hover { background: #581c87; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div>राष्ट्रीय मूल्यांकन एवं प्रत्यायन परिषद (NAAC) Accredited Grade 'A+' University</div>
+    <div>
+      <a href="#">Hindi | हिन्दी</a>
+      <a href="#">Screen Reader Access</a>
+      <a href="https://admission.uod.ac.in" target="_blank">Admissions 2026</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-emblem">DU</div>
+      <div class="brand-text">
+        <h1>UNIVERSITY OF DELHI</h1>
+        <p>दिल्ली विश्वविद्यालय • Established 1922</p>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#">About DU</a>
+      <a href="#">Governance</a>
+      <a href="#">Admissions <span class="nav-badge">CSAS</span></a>
+      <a href="#">Academics</a>
+      <a href="#">Colleges Directory</a>
+      <a href="#">Examination</a>
+      <a href="#">Research</a>
+    </nav>
+  </header>
+
+  <!-- HERO BANNER -->
+  <section class="hero">
+    <h2>Centenary of Academic Excellence</h2>
+    <p>A premier collegiate public Central University committed to world-class research, inclusive undergraduate education, and academic innovation across 90+ constituent colleges.</p>
+    <a href="javascript:void(0)" onclick="openChatWith('What courses are available in DU?')" class="hero-btn">
+      <i class="fa-solid fa-comments"></i> Ask DU AI Assistant
+    </a>
+  </section>
+
+  <!-- QUICK PORTALS GRID -->
+  <div class="section-title"><i class="fa-solid fa-compass"></i> Central University Portals</div>
+  <div class="portals-grid">
+    <div class="portal-card">
+      <div class="portal-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <h3>CSAS Admission Portal</h3>
+      <p>Central Common Seat Allocation System for CUET UG and PG candidate registrations and counseling.</p>
+    </div>
+    <div class="portal-card">
+      <div class="portal-icon"><i class="fa-solid fa-building-columns"></i></div>
+      <h3>90+ Colleges Directory</h3>
+      <p>Explore North Campus, South Campus, and Off-Campus colleges, cutoffs, and faculty details.</p>
+    </div>
+    <div class="portal-card">
+      <div class="portal-icon"><i class="fa-solid fa-file-signature"></i></div>
+      <h3>Examination & Datesheets</h3>
+      <p>Semester datesheets, internal assessment guidelines, and 10-point CGPA conversion formulas.</p>
+    </div>
+    <div class="portal-card">
+      <div class="portal-icon"><i class="fa-solid fa-book-open"></i></div>
+      <h3>UGCF-2022 Syllabi</h3>
+      <p>National Education Policy (NEP) curriculum structures, major/minor courses, and credit matrices.</p>
+    </div>
+  </div>
+
+  <!-- LATEST NOTICES -->
+  <div class="notices-section">
+    <h3 style="color: #3b0764; margin-bottom: 20px; font-size: 18px;"><i class="fa-solid fa-bullhorn"></i> Official Press Releases & Notices</h3>
+    <div class="notice-item">
+      <span class="notice-date">Nov 2026</span>
+      <div class="notice-text"><a href="#">Notice regarding CSAS Round 3 allocation schedule for Undergraduate Admissions</a></div>
+    </div>
+    <div class="notice-item">
+      <span class="notice-date">Oct 2026</span>
+      <div class="notice-text"><a href="#">Notification on Semester End Theory Examination Datesheets (Odd Semesters)</a></div>
+    </div>
+    <div class="notice-item">
+      <span class="notice-date">Sep 2026</span>
+      <div class="notice-text"><a href="#">Guidelines for Fee Concession and Financial Assistance scheme under DSW</a></div>
+    </div>
+  </div>
+
+  <!-- FLOATING CHAT WIDGET -->
+  <button id="du-chat-toggle" title="Chat with DU Virtual Assistant">
+    <i class="fa-solid fa-robot"></i>
+  </button>
+
+  <div id="du-chat-window">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <h4>DU Samvaad | दिल्ली विश्वविद्यालय AI</h4>
+        <p>Hybrid RAG & Grounded Student Concierge</p>
+      </div>
+      <button class="chat-close-btn" id="du-close-chat">&times;</button>
+    </div>
+
+    <div class="chat-messages" id="du-chat-messages">
+      <div class="msg bot">
+        🙏 <b>Namaste! Welcome to the University of Delhi.</b><br><br>
+        I am your AI assistant for DU. You can ask me about:
+        <br>• Central CUET & CSAS Admissions
+        <br>• 90+ Constituent Colleges & Course Matrices
+        <br>• Vice-Chancellor & Central Administration
+        <br>• CGPA Calculation & Examination Rules
+        <div class="suggestion-pills">
+          <span class="pill" onclick="askPill('Who is the Vice-Chancellor of DU?')">Vice-Chancellor</span>
+          <span class="pill" onclick="askPill('What is CSAS portal?')">CSAS Admissions</span>
+          <span class="pill" onclick="askPill('How many colleges are in DU?')">90+ Colleges</span>
+          <span class="pill" onclick="askPill('What is the CGPA conversion formula in DU?')">CGPA Formula</span>
+          <span class="pill" onclick="askPill('What is the NAAC grade of DU?')">DU NAAC Grade</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-bar">
+      <input type="text" id="du-chat-input" placeholder="Ask about DU or colleges (English / Hinglish)..." />
+      <button class="chat-send-btn" id="du-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = window.location.origin + "/ask";
+    const toggleBtn = document.getElementById("du-chat-toggle");
+    const chatWindow = document.getElementById("du-chat-window");
+    const closeBtn = document.getElementById("du-close-chat");
+    const inputField = document.getElementById("du-chat-input");
+    const sendBtn = document.getElementById("du-send-btn");
+    const msgContainer = document.getElementById("du-chat-messages");
+
+    toggleBtn.addEventListener("click", () => {
+      const isVisible = chatWindow.style.display === "flex";
+      chatWindow.style.display = isVisible ? "none" : "flex";
+      if (!isVisible) inputField.focus();
+    });
+
+    closeBtn.addEventListener("click", () => {
+      chatWindow.style.display = "none";
+    });
+
+    function openChatWith(text) {
+      chatWindow.style.display = "flex";
+      inputField.value = text;
+      sendMessage();
+    }
+
+    function askPill(text) {
+      inputField.value = text;
+      sendMessage();
+    }
+
+    function addMessage(text, role) {
+      const div = document.createElement("div");
+      div.className = `msg ${role}`;
+      div.innerHTML = text.replace(/\n/g, "<br>");
+      msgContainer.appendChild(div);
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+      return div;
+    }
+
+    inputField.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+    sendBtn.addEventListener("click", sendMessage);
+
+    async function sendMessage() {
+      const query = inputField.value.trim();
+      if (!query) return;
+
+      addMessage(query, "user");
+      inputField.value = "";
+      sendBtn.disabled = true;
+
+      const typingDiv = addMessage("Thinking...", "bot typing");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: query })
+        });
+        const data = await response.json();
+        typingDiv.remove();
+        addMessage(data.answer || "No data found.", "bot");
+      } catch (err) {
+        typingDiv.remove();
+        addMessage("⚠️ Unable to connect to the server. Please verify backend is running.", "bot");
+      }
+
+      sendBtn.disabled = false;
+      inputField.focus();
+    }
+  </script>
+
+</body>
+</html>

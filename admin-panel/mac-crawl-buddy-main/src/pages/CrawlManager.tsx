@@ -77,8 +77,8 @@ const CrawlManager = () => {
           )}
           <form onSubmit={handleStart} className="flex flex-col sm:flex-row gap-3 items-end">
             <div className="flex-1 space-y-1">
-              <Label>Subdomain URL</Label>
-              <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://mac.du.ac.in" required />
+              <Label>Target Institutional Portal or College URL</Label>
+              <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://mac.du.ac.in or https://www.du.ac.in" required />
             </div>
             <div className="w-32 space-y-1">
               <Label>Max Pages</Label>

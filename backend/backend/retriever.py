@@ -2,16 +2,45 @@ import faiss
 import json
 import numpy as np
 import re
+import os
+import sys
+import math
 from sentence_transformers import SentenceTransformer
-from backend.llm import generate_answer
 
-INDEX_FILE = "data/faiss.index"
-META_FILE = "data/meta.json"
+# ==============================================================================
+# PATH & MODULE RESOLUTION (ROBUST ACROSS WORKING DIRECTORIES)
+# ==============================================================================
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+BACKEND_DIR = os.path.dirname(CURRENT_DIR)
+for p in [CURRENT_DIR, BACKEND_DIR]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
-TOP_K_CANDIDATES = 80
+try:
+    from backend.llm import generate_answer, is_existence_query
+except ImportError:
+    from llm import generate_answer, is_existence_query
+
+
+def resolve_path(relative_path: str) -> str:
+    candidates = [
+        os.path.join(BACKEND_DIR, relative_path),
+        os.path.join(os.getcwd(), relative_path),
+        os.path.join(os.getcwd(), "backend", relative_path),
+        os.path.join(os.getcwd(), "repo", "backend", relative_path),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return p
+    return os.path.join(BACKEND_DIR, relative_path)
+
+INDEX_FILE = resolve_path("data/faiss.index")
+META_FILE = resolve_path("data/meta.json")
+
+TOP_K_CANDIDATES = 60
 TOP_K_DEFAULT = 5
 TOP_K_LISTING = 40
-MIN_SCORE = 0.10
+MIN_SCORE = 0.05
 
 HIGH_VALUE_URLS = {
     "contactus.aspx": 0.70,
@@ -28,25 +57,24 @@ HIGH_VALUE_URLS = {
     "chemistry-intro": 0.20,
     "electronics-intro": 0.30,
     "physical-education": 0.20,
-    "english-intro": 0.20,
+    "english-intro": 0.30,
     "computersci-intro": 0.20,
     "journalism-intro": 0.20,
     "hindi-intro": 0.20,
     "physics-intro": 0.20,
     "political-science": 0.20,
-    "business-economics-intro": 0.20,
+    "business-economics-intro": 0.35,
     "economics-intro": 0.20,
     "biology-intro": 0.20,
-    # Department faculty listing pages (confirmed in meta.json)
-    "electronics.aspx":          0.45,
-    "commerce.aspx":             0.45,
-    "computersci.aspx":          0.45,
-    "mathematics.aspx":          0.45,
-    "physics.aspx":              0.45,
-    "english.aspx":              0.40,
-    "hindi.aspx":                0.40,
-    "history.aspx":              0.40,
-    "journalism.aspx":           0.40,
+    "electronics.aspx": 0.45,
+    "commerce.aspx": 0.45,
+    "computersci.aspx": 0.45,
+    "mathematics.aspx": 0.45,
+    "physics.aspx": 0.45,
+    "english.aspx": 0.45,
+    "hindi.aspx": 0.40,
+    "history.aspx": 0.40,
+    "journalism.aspx": 0.40,
 }
 
 LISTING_KEYWORDS = [
@@ -68,18 +96,79 @@ YESNO_KEYWORDS = [
     "is ba ", "is bcom", "is msc"
 ]
 
-print("[INIT] Loading embedding model...")
+print("[INIT] Loading dense embedding model (all-MiniLM-L6-v2)...")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-print("[INIT] Loading FAISS index...")
+print(f"[INIT] Loading FAISS index from: {INDEX_FILE}")
 index = faiss.read_index(INDEX_FILE)
 
-print("[INIT] Loading metadata...")
+print(f"[INIT] Loading metadata from: {META_FILE}")
 with open(META_FILE, "r", encoding="utf-8") as f:
     metadata = json.load(f)
 
-print(f"[INIT] Ready. {len(metadata)} chunks loaded.\n")
+# ==============================================================================
+# BM25 LEXICAL ENGINE (SPARSE RETRIEVAL)
+# ==============================================================================
+def bm25_tokenize(text: str) -> list:
+    """Extract lowercased alphanumeric words for sparse term matching."""
+    return [w for w in re.findall(r"\b\w+\b", text.lower()) if len(w) > 1]
 
+print("[INIT] Indexing corpus for BM25 lexical retrieval...")
+tokenized_corpus = [bm25_tokenize(doc.get("text", "")) for doc in metadata]
+
+try:
+    from rank_bm25 import BM25Okapi
+    bm25 = BM25Okapi(tokenized_corpus)
+    print(f"[INIT] BM25Okapi initialized across {len(tokenized_corpus)} chunks.")
+except Exception as e:
+    print(f"[INIT] Note: rank_bm25 fallback engine activated ({e})")
+    class FallbackBM25Okapi:
+        def __init__(self, corpus, k1=1.5, b=0.75):
+            self.k1 = k1
+            self.b = b
+            self.corpus_size = len(corpus)
+            self.avgdl = sum(len(x) for x in corpus) / self.corpus_size if self.corpus_size > 0 else 1.0
+            self.doc_freqs = []
+            self.idf = {}
+            nd = {}
+            for document in corpus:
+                frequencies = {}
+                for word in document:
+                    frequencies[word] = frequencies.get(word, 0) + 1
+                self.doc_freqs.append(frequencies)
+                for word in frequencies:
+                    nd[word] = nd.get(word, 0) + 1
+            for word, freq in nd.items():
+                self.idf[word] = math.log((self.corpus_size - freq + 0.5) / (freq + 0.5) + 1)
+
+        def get_scores(self, query_tokens):
+            scores = np.zeros(self.corpus_size)
+            for q in query_tokens:
+                q_idf = self.idf.get(q, 0.0)
+                if q_idf <= 0:
+                    continue
+                for idx, freqs in enumerate(self.doc_freqs):
+                    if q in freqs:
+                        freq = freqs[q]
+                        doc_len = sum(freqs.values())
+                        num = freq * (self.k1 + 1)
+                        denom = freq + self.k1 * (1 - self.b + self.b * (doc_len / self.avgdl))
+                        scores[idx] += q_idf * (num / denom)
+            return scores
+    bm25 = FallbackBM25Okapi(tokenized_corpus)
+
+# ==============================================================================
+# CROSS-ENCODER NEURAL RERANKER (STAGE 2)
+# ==============================================================================
+reranker = None
+try:
+    from sentence_transformers import CrossEncoder
+    reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+    print("[INIT] Cross-Encoder reranker (ms-marco-MiniLM-L-6-v2) ready.")
+except Exception as e:
+    print(f"[INIT] Cross-Encoder deferred to RRF ranking ({e})")
+
+print(f"[INIT] Ready. Hybrid retrieval pipeline loaded with {len(metadata)} chunks.\n")
 
 INTENT_MAP = {
     "principal": {
@@ -108,7 +197,7 @@ INTENT_MAP = {
             "what departments", "what programmes",
             "which courses", "which departments",
             "electronics", "does mac offer", "journalism",
-            "all departments", "all courses"
+            "all departments", "all courses", "english", "hindi"
         ],
         "boost": ["department", "programme", "course", "undergraduate"],
     },
@@ -139,13 +228,12 @@ INTENT_MAP = {
             "what is maharaja", "history", "established",
             "founded", "since when", "affiliation",
             "accreditation", "naac", "vision", "mission",
-            # Course description queries — "what is B.A. English"
             "what is b.a.", "what is b.sc", "what is b.com",
             "what is bsc", "what is bcom", "what is ba ",
             "describe the", "tell me about the course",
-            "what is bbe", "what is bbec",
+            "what is bbe", "what is bbec", "bbe"
         ],
-        "boost": ["maharaja agrasen college", "established", "affiliated"],
+        "boost": ["maharaja agrasen college", "affiliated", "undergraduate"],
     },
 }
 
@@ -177,7 +265,7 @@ def get_specific_subject(query):
         "physics", "chemistry", "commerce", "english",
         "hindi", "history", "political science", "economics",
         "journalism", "business economics", "physical education",
-        "biology"
+        "biology", "bbe"
     ]
     q = query.lower()
     for subject in subjects:
@@ -188,6 +276,9 @@ def get_specific_subject(query):
 
 def expand_query(query, intent, boost_terms):
     if intent == "general" or not boost_terms:
+        return query
+    # Avoid diluting acronym queries like BBE or specific courses
+    if any(acr in query.lower() for acr in ["bbe", "naac", "b.a. english", "electronics"]):
         return query
     return f"{query} {' '.join(boost_terms[:2])}"
 
@@ -207,7 +298,6 @@ def apply_url_boost(source, intent, score):
     if "faculties_detail" in source_lower and intent not in ["faculty", "principal"]:
         score -= 0.20
 
-    # Penalise ERP/payment portal — never relevant for informational queries
     if "macerp" in source_lower or "online payment" in source_lower.replace(" ", ""):
         score -= 0.80
 
@@ -240,17 +330,12 @@ def apply_intent_boost(text, source, intent, score, query=""):
     elif intent == "faculty":
         if any(w in text_lower for w in ["faculty", "professor", "lecturer"]):
             score += 0.20
-        # Boost faculty detail pages for faculty queries
-        # These pages contain individual faculty name, dept, email
         if "faculties_detail" in source_lower:
             score += 0.35
-        # Boost department faculty listing pages
         if "faculty=faculty" in source_lower:
             score += 0.25
-        # If query contains a specific name, boost chunks that contain it
         query_lower = query.lower()
         if any(w in query_lower for w in ["dr.", "prof."]):
-            # Extract potential name words from query (skip dr./prof./who/is)
             skip = {"who", "is", "are", "dr", "prof", "the", "a", "an", "?"}
             name_words = [
                 w.strip(".,?") for w in query_lower.split()
@@ -262,38 +347,35 @@ def apply_intent_boost(text, source, intent, score, query=""):
     elif intent == "department":
         if any(w in text_lower for w in ["department", "programme", "course", "undergraduate", "bachelor", "fyup"]):
             score += 0.25
-        if any(w in text_lower for w in ["bcom", "bsc", "ba ", "btech"]):
-            score += 0.15
+        if any(w in text_lower for w in ["bcom", "bsc", "ba ", "btech", "bbe"]):
+            score += 0.25
         if "departments.aspx" in source_lower:
             score += 0.25
         if "courses.aspx" in source_lower:
-            score += 0.25
-        # Boost department-specific pages when subject appears in both query and source
+            score += 0.30
         if query:
             query_lower_d = query.lower()
             SUBJECTS = [
                 "electronics", "commerce", "mathematics", "physics",
                 "chemistry", "computer", "english", "hindi", "history",
                 "journalism", "economics", "political", "biology",
-                "business economics", "physical education",
+                "business economics", "physical education", "bbe"
             ]
             for subj in SUBJECTS:
-                if subj in query_lower_d and subj in source_lower:
+                if subj in query_lower_d and (subj in source_lower or subj in text_lower):
                     score += 0.45
                     break
         if is_yesno_query(query):
             subject = get_specific_subject(query)
-            if subject and subject in source_lower:
+            if subject and (subject in source_lower or subject in text_lower):
                 score += 0.50
-            if subject and subject in text_lower:
-                score += 0.20
 
     elif intent == "admission":
         if any(w in text_lower for w in ["admission", "eligibility"]):
             score += 0.20
 
     elif intent == "fee":
-        if any(w in text_lower for w in ["fee", "fees", "charges"]):
+        if any(w in text_lower for w in ["fee", "fees", "charges", "hostel"]):
             score += 0.25
 
     elif intent == "contact":
@@ -309,13 +391,14 @@ def apply_intent_boost(text, source, intent, score, query=""):
     elif intent == "identity":
         if any(w in text_lower for w in ["maharaja agrasen", "established", "affiliated", "university of delhi", "accredited", "naac", "vision", "mission"]):
             score += 0.35
-        # Boost course intro pages for course description queries
+        if "bbe" in query.lower() and "bbe" in text_lower:
+            score += 0.50
         COURSE_INTRO_PATTERNS = [
             "commerce-intro", "english-intro", "hindi-intro",
             "journalism-intro", "business-economics-intro",
             "electronics-intro", "mathematics-intro",
             "physics-intro", "chemistry-intro", "biology-intro",
-            "computersci-intro", "political-science",
+            "computersci-intro", "political-science", "degree_details"
         ]
         if any(p in source_lower for p in COURSE_INTRO_PATTERNS):
             score += 0.40
@@ -330,6 +413,23 @@ def _fallback_results(results, k):
     return results[:k]
 
 
+# ==============================================================================
+# RECIPROCAL RANK FUSION (RRF) & HYBRID RETRIEVAL
+# ==============================================================================
+def reciprocal_rank_fusion(dense_ranks: list, sparse_ranks: list, k_rrf=60) -> dict:
+    """
+    RRF Score: sum( 1.0 / (k_rrf + rank) )
+    dense_ranks: list of idx
+    sparse_ranks: list of idx
+    """
+    rrf_scores = {}
+    for rank, idx in enumerate(dense_ranks):
+        rrf_scores[idx] = rrf_scores.get(idx, 0.0) + (1.0 / (k_rrf + rank + 1))
+    for rank, idx in enumerate(sparse_ranks):
+        rrf_scores[idx] = rrf_scores.get(idx, 0.0) + (1.0 / (k_rrf + rank + 1))
+    return rrf_scores
+
+
 def search(query, k=None):
     intent, boost_terms = detect_intent(query)
     print(f"[INTENT] {intent}")
@@ -337,9 +437,7 @@ def search(query, k=None):
     listing = is_listing_query(query)
     yesno = is_yesno_query(query)
 
-    # Existence queries (does MAC offer X, is X available) must use
-    # TOP_K_DEFAULT — not TOP_K_LISTING — to prevent LLM timeout
-    from backend.llm import is_existence_query
+    # is_existence_query already imported at top level
     existence = is_existence_query(query)
 
     if k is None:
@@ -349,49 +447,75 @@ def search(query, k=None):
             k = TOP_K_LISTING if listing else TOP_K_DEFAULT
     k = max(1, int(k))
 
-    print(f"[SEARCH] Using top {k} chunks (listing={listing}, yesno={yesno}, existence={existence})")
+    print(f"[SEARCH] Querying hybrid index (listing={listing}, yesno={yesno}, existence={existence})")
 
+    # ── 1. Dense FAISS Retrieval ──────────────────────────────────────────────
     expanded = expand_query(query, intent, boost_terms)
     q_emb = model.encode([expanded], normalize_embeddings=False)
     D, I = index.search(np.array(q_emb, dtype="float32"), TOP_K_CANDIDATES)
+    dense_candidates = [int(idx) for idx in I[0] if idx != -1]
 
-    results = []
-    for dist, idx in zip(D[0], I[0]):
-        if idx == -1:
-            continue
+    # ── 2. Sparse Lexical BM25 Retrieval ──────────────────────────────────────
+    query_tokens = bm25_tokenize(query)
+    if query_tokens:
+        bm25_scores = bm25.get_scores(query_tokens)
+        top_bm25_indices = np.argsort(bm25_scores)[::-1][:TOP_K_CANDIDATES]
+        sparse_candidates = [int(idx) for idx in top_bm25_indices if bm25_scores[idx] > 0]
+    else:
+        sparse_candidates = []
 
+    # ── 3. Reciprocal Rank Fusion (RRF) ───────────────────────────────────────
+    fused_scores = reciprocal_rank_fusion(dense_candidates, sparse_candidates, k_rrf=60)
+    if not fused_scores:
+        print("[SEARCH] No candidates found across Dense and Sparse retrieval.")
+        return []
+
+    # Apply URL & Intent domain boosts to fused candidates
+    scored_candidates = []
+    for idx, rrf_score in fused_scores.items():
         item = metadata[idx]
         text = item.get("text", "")
         source = item.get("source", "unknown") or "unknown"
 
-        score = l2_to_similarity(dist)
+        # Scale RRF score to [0, 1] baseline and add domain bonuses
+        score = float(rrf_score) * 15.0
         score = apply_url_boost(source, intent, score)
         score = apply_intent_boost(text, source, intent, score, query)
 
-        if len(text.split()) < 25:
+        if len(text.split()) < 20:
             score -= 0.10
 
-        results.append({
+        scored_candidates.append({
+            "idx": idx,
             "text": text,
             "source": source,
             "type": item.get("type", "general"),
             "score": round(score, 4),
         })
 
-    if not results:
-        print("[SEARCH] No candidates found.")
-        return []
+    scored_candidates.sort(key=lambda x: x["score"], reverse=True)
 
-    results.sort(key=lambda x: x["score"], reverse=True)
-    filtered = [r for r in results if r["score"] >= MIN_SCORE]
+    # ── 4. Cross-Encoder Neural Reranking (Top 15 Pool) ───────────────────────
+    top_pool = scored_candidates[:15]
+    if reranker is not None and top_pool:
+        try:
+            pairs = [[query, doc["text"][:500]] for doc in top_pool]
+            ce_scores = reranker.predict(pairs)
+            for i, doc in enumerate(top_pool):
+                # Blend Cross-Encoder score (logit) with domain score
+                ce_val = float(ce_scores[i])
+                doc["score"] = round(doc["score"] + (ce_val * 0.5), 4)
+            top_pool.sort(key=lambda x: x["score"], reverse=True)
+            scored_candidates = top_pool + scored_candidates[15:]
+        except Exception as e:
+            print(f"[RERANK] Warning during Cross-Encoder: {e}")
 
+    filtered = [r for r in scored_candidates if r["score"] >= MIN_SCORE]
     if not filtered:
-        print("[SEARCH] No chunk crossed threshold; returning best raw candidates.")
-        filtered = _fallback_results(results, k)
+        filtered = _fallback_results(scored_candidates, k)
 
-    print(f"[SEARCH] {len(filtered)} chunks selected.")
+    # ── 5. Source Deduplication ───────────────────────────────────────────────
     max_per_source = 1 if intent == "principal" else 2
-
     seen_sources = {}
     deduplicated = []
     for r in filtered:
@@ -402,7 +526,7 @@ def search(query, k=None):
             seen_sources[src] = count + 1
 
     top = deduplicated[:k]
-    print(f"[SEARCH] After dedup: {len(deduplicated)}. Using top {len(top)}.")
+    print(f"[SEARCH] After hybrid fusion & reranking: using top {len(top)} chunks.")
     for i, r in enumerate(top):
         print(f"  [{i+1}] score={r['score']} | {r['source']}")
 
@@ -421,14 +545,31 @@ def answer(query):
     return generate_answer(query, results)
 
 
+def reload_index():
+    global index, metadata, tokenized_corpus, bm25
+    print("[RELOAD] Reloading FAISS and metadata...")
+    index = faiss.read_index(INDEX_FILE)
+    with open(META_FILE, "r", encoding="utf-8") as f:
+        metadata = json.load(f)
+    tokenized_corpus = [bm25_tokenize(doc.get("text", "")) for doc in metadata]
+    try:
+        from rank_bm25 import BM25Okapi
+        bm25 = BM25Okapi(tokenized_corpus)
+    except Exception:
+        pass
+    print(f"[RELOAD] Complete. {len(metadata)} chunks active.")
+
+
 if __name__ == "__main__":
-    print("College RAG Chatbot — type 'exit' to quit\n")
-    while True:
-        query = input("Ask: ").strip()
-        if not query:
-            continue
-        if query.lower() == "exit":
-            break
-        print("\nAnswer:")
-        print(answer(query))
-        print("\n" + "=" * 60)
+    print("College Hybrid RAG Chatbot — testing query\n")
+    sample_queries = [
+        "What is BBE course?",
+        "Does MAC offer B.A. English?",
+        "Who is the principal?",
+        "What is the NAAC grade of MAC?"
+    ]
+    for q in sample_queries:
+        print(f"\nQ: {q}")
+        chunks = search(q, k=3)
+        for c in chunks:
+            print(f"  -> {c['source']} | Score: {c['score']}")
