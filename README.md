@@ -5,7 +5,7 @@ An offline, privacy-preserving, and grounded Retrieval-Augmented Generation (RAG
 This project was developed by **Kartikey Tiwari** as a final-year research dissertation under the academic supervision of:
 * **Prof. Amit Pundir** — Department of Electronics, Maharaja Agrasen College, University of Delhi
 * **Prof. Geetika Jain Saxena** — Department of Electronics, Maharaja Agrasen College, University of Delhi
-* **Mr. Pushkar Baranwal** — Research Mentor & Supervisor
+* **Mr. Pushkar Baranwal** — Research Scholar, Institute of Informatics and Communication, South Campus, University of Delhi
 
 > **Scope & Institutional Generalization:**  
 > **Maharaja Agrasen College (`mac.du.ac.in`) was used as the first implementation and ground-truth validation testbed** for this research. However, the system architecture, ingestion pipeline, and retrieval engine are completely institution-agnostic. The software is designed to be deployed across **any educational institute, college, or university**—and has already been extended to the central University of Delhi portal (`du.ac.in`) and its collegiate ecosystem.
@@ -223,8 +223,8 @@ This project was carried out as a final-year undergraduate research dissertation
 
 * **Author & Lead Developer:** **Kartikey Tiwari** (`kartikeyatiwari03@gmail.com`)
 * **Research Supervisor:** **Prof. Amit Pundir** (Department of Electronics, Maharaja Agrasen College, University of Delhi)
-* **Research Supervisor:** **Prof. Geetika Jain Saxena** (Department of Electronics, Maharaja Agrasen College, University of Delhi)
-* **Research Mentor & Supervisor:** **Mr. Pushkar Baranwal**
+* **Research Co-Supervisor:** **Prof. Geetika Jain Saxena** (Department of Electronics, Maharaja Agrasen College, University of Delhi)
+* **Research Mentor:** **Mr. Pushkar Baranwal** (Research Scholar, Institute of Informatics and Communication, South Campus, University of Delhi)
 
 ---
 
