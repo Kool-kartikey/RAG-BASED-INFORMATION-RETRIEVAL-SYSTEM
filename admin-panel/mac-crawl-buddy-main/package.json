@@ -1,7 +1,8 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "sewa-chatbot-admin-panel",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Project S.E.W.A Campus Intelligence — Mission Control & Crawler Administration Dashboard for Maharaja Agrasen College, DU",
   "type": "module",
   "scripts": {
     "dev": "vite",
