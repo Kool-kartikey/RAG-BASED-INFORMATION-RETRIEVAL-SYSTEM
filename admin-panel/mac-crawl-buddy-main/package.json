@@ -2,7 +2,7 @@
   "name": "sewa-chatbot-admin-panel",
   "private": true,
   "version": "1.0.0",
-  "description": "Project S.E.W.A Campus Intelligence — Mission Control & Crawler Administration Dashboard for Maharaja Agrasen College, DU",
+    "description": "Local RAG Knowledge Ingestion & Crawler Administration Dashboard for Educational Institutions",
   "type": "module",
   "scripts": {
     "dev": "vite",
